@@ -261,7 +261,7 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
         } else {
             process.nextTick(() => {
                 clearTimeout(pollRegistry);
-                logger.fine("MSDA: onPost/stopping, Stop polling registry  for: " + inputPoolName);
+                logger.fine("MSDA: onPost/stopping, Stop polling registry for: " + inputPoolName);
             });
             // Delete pool configuration in case it still there.
             setTimeout (function () {
