@@ -13,6 +13,7 @@
   language governing permissions and limitations under the License.
   
   Updated by Ping Xiong on May/04/2022.
+  Updated by Ping Xiong on Jul/1/2022, using global var for polling signal.
 */
 
 'use strict';
@@ -345,7 +346,6 @@ msdaconsulConfigProcessor.prototype.onDelete = function (restOperation) {
             let signalIndex = global.msdaconsulOnPolling.indexOf(inputProperties.poolName.value);
             global.msdaconsulOnPolling.splice(signalIndex,1);
         });
-        // Always called, no matter the disposition. Also handles re-throwing internal exceptions.
     // Stop polling registry while undeploy ??
     //stopPolling = true;
     //stopPollingEvent.emit('stopPollingRegistry');
