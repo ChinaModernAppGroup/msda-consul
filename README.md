@@ -3,9 +3,17 @@
 This iApp is an example of MSDA working with Consul, including an audit processor.  
 
 ## Build (requires rpmbuild)
-
+  Check the modules dependency:
+```bash
+    $ cd src/nodejs
+    $ npm list
+```
+  Fix all dependent modules with `npm install` command.
+  Go back to the root direct of the project, build an rpm package:
+```bash
+    $ cd ../..
     $ npm run build
-
+```
 Build output is an RPM package
 ## Using IAppLX from BIG-IP UI
 If you are using BIG-IP, install f5-iapplx-msda-consul RPM package using iApps->Package Management LX->Import screen. To create an application, use iApps-> Templates LX -> Application Services -> Applications LX -> Create screen. Default IApp LX UI will be rendered based on the input properties specified in basic pool IAppLX.
