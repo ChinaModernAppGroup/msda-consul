@@ -14,6 +14,12 @@
 
   Updated by Ping Xiong on May/13/2022
   Updated by Ping Xiong on Jul/1/2022, using global var for polling signal.
+  pdated by Ping Xiong on Oct/05/2022, modify the polling signal into a json object to keep more information.
+  let blockInstance = {
+    name: "instanceName", // a block instance of the iapplx config
+    state: "polling", // can be "polling" for normal running state; "update" to modify the iapplx config
+    bigipPool: "/Common/samplePool"
+  }
 
 */
 
@@ -88,7 +94,7 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
             
             var blockInputProperties = blockUtil.getMapFromPropertiesAndValidate(
                 auditTaskState.currentInputProperties,
-                ["poolName", "poolType", "healthMonitor"]
+                ["poolName"]
             );
             
             
@@ -98,14 +104,19 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
             logger.fine("MSDA consul Audit: msdaconsul poolName: ", blockInputProperties.poolName.value);
 
             if (
-                global.msdaconsulOnPolling.includes(blockInputProperties.poolName.value)
+                global.msdaconsulOnPolling.some(
+                    (instance) =>
+                        instance.bigipPool === blockInputProperties.poolName.value
+                )
             ) {
                 logger.fine(
-                "MSDA consul audit onPost: ConfigProcessor is on polling state, no need to fire an onPost."
+                    "MSDA consul audit onPost: ConfigProcessor is on polling state, no need to fire an onPost.",
+                    blockInputProperties.poolName.value
                 );
             } else {
                 logger.fine(
-                "MSDA consul audit onPost: ConfigProcessor is NOT on polling state, will trigger ConfigProcessor onPost."
+                    "MSDA consul audit onPost: ConfigProcessor is NOT on polling state, will trigger ConfigProcessor onPost.",
+                    blockInputProperties.poolName.value
                 );
                 try {
                     var poolNameObject = getObjectByID(
@@ -128,7 +139,7 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
             logger.fine("msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost caught generic exception " + ex);
             restOperation.fail(ex);
         }
-    }, 1000)
+    }, 2000)
 };
 
 var getObjectByID = function ( key, array) {
