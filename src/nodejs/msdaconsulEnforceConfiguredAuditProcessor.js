@@ -14,7 +14,7 @@
 
   Updated by Ping Xiong on May/13/2022
   Updated by Ping Xiong on Jul/1/2022, using global var for polling signal.
-  pdated by Ping Xiong on Oct/05/2022, modify the polling signal into a json object to keep more information.
+  Updated by Ping Xiong on Oct/05/2022, modify the polling signal into a json object to keep more information.
   let blockInstance = {
     name: "instanceName", // a block instance of the iapplx config
     state: "polling", // can be "polling" for normal running state; "update" to modify the iapplx config
