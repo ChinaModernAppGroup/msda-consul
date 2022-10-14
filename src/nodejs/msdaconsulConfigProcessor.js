@@ -20,6 +20,8 @@
     state: "polling", // can be "polling" for normal running state; "update" to modify the iapplx config
     bigipPool: "/Common/samplePool"
   }
+  Updated by Will Tang on Oct/14/2022, modify pool member generating. Add an condition check if a service data has ServiceAddress entry, if not then using Address entry instead.
+  Modified code in line 308.
 */
 
 'use strict';
@@ -303,7 +305,12 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
                 .then(function(jsondata) {
                     let nodeAddress = [];
                     jsondata.forEach(element => {
-                        nodeAddress.push(element.ServiceAddress+ ":"+element.ServicePort);
+                        if (element.ServiceAddress !== "") {
+                            nodeAddress.push(element.ServiceAddress+ ":"+element.ServicePort);
+                        }
+                        else {
+                            nodeAddress.push(element.Address+ ":"+element.ServicePort);
+                        }
                     });
                     logger.fine(
                         "MSDA: onPost, " +
