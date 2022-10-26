@@ -12,6 +12,26 @@
       }
     },
     {
+      "id": "consulToken",
+      "type": "STRING",
+      "value": "",
+      "metaData": {
+        "description": "Access token for consul resource",
+        "displayName": "X-Consul-Token",
+        "isRequired": false
+      }
+    },
+    {
+      "id": "nameSpace",
+      "type": "STRING",
+      "value": "",
+      "metaData": {
+        "description": "Namespace for consul enterprise",
+        "displayName": "Namespace",
+        "isRequired": false
+      }
+    },
+    {
       "id": "serviceName",
       "type": "STRING",
       "value": "http",
@@ -62,12 +82,7 @@
         "uiType": "dropdown",
         "uiHints": {
           "list": {
-            "dataList": [
-              "tcp",
-              "udp",
-              "http",
-              "none"
-            ]
+            "dataList": ["tcp", "udp", "http", "none"]
           }
         }
       }
