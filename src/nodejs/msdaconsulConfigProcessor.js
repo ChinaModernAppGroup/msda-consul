@@ -22,6 +22,7 @@
   }
   Updated by Will Tang on Oct/14/2022, modify pool member generating. Add an condition check if a service data has ServiceAddress entry, if not then using Address entry instead.
   Modified code in line 308.
+  Updated by Ping Xiong on Oct/26/2022, to add namespace id for consul enterprise and X-Consul-Token for ACL.
 */
 
 'use strict';
@@ -115,8 +116,16 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
         logger.fine("MSDA: onPost, dataProperties ", blockState.dataProperties);
         logger.fine("MSDA: onPost, instanceName ", blockState.name);
         inputProperties = blockUtil.getMapFromPropertiesAndValidate(
-            blockState.inputProperties,
-            ["consulEndpoint", "serviceName", "poolName", "poolType", "healthMonitor"]
+          blockState.inputProperties,
+          [
+            "consulEndpoint",
+            "consulToken",
+            "nameSpace",
+            "serviceName",
+            "poolName",
+            "poolType",
+            "healthMonitor",
+          ]
         );
         dataProperties = blockUtil.getMapFromPropertiesAndValidate(
             blockState.dataProperties,
@@ -141,6 +150,8 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
     //Accept input proterties, set the status to BOUND.
 
     var inputEndPoint = inputProperties.consulEndpoint.value;
+    const inputConsulToken = inputProperties.consulToken.value;
+    const inputNamespace = inputProperties.nameSpace.value;
     const inputServiceName = inputProperties.serviceName.value;
     const inputPoolName = inputProperties.poolName.value;
     const inputPoolType = inputProperties.poolType.value;
@@ -263,7 +274,12 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
     );
 
     // connect to consul registry to retrieve end points.
-    const absoluteUrl = inputEndPoint + consulAPI + inputServiceName;
+    var absoluteUrl = inputEndPoint + consulAPI + inputServiceName;
+
+    // add namespace if needed
+    if (inputNamespace !== "") {
+        absoluteUrl = absoluteUrl + "?ns=" + inputNamespace;
+    }
 
     (function schedule() {
         var pollRegistry = setTimeout(function () {
@@ -300,7 +316,7 @@ msdaconsulConfigProcessor.prototype.onPost = function (restOperation) {
             }
 
             // Polling the consul server ...
-            fetch(absoluteUrl)
+            fetch(absoluteUrl, { headers: { 'X-Consul-Token': inputConsulToken } })
                 .then(res => res.json())
                 .then(function(jsondata) {
                     let nodeAddress = [];
