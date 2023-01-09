@@ -82,7 +82,7 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
     var auditTaskState = restOperation.getBody();
 
 
-    setTimeout(function () {
+    //setTimeout(function () {
         try {
             if (!auditTaskState ) {
                 throw new Error("AUDIT: Audit task state must exist ");
@@ -139,7 +139,7 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
             logger.fine("msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost caught generic exception " + ex);
             restOperation.fail(ex);
         }
-    }, 2000)
+    //}, 2000)
 };
 
 var getObjectByID = function ( key, array) {
