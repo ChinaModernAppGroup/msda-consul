@@ -82,7 +82,7 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
     var auditTaskState = restOperation.getBody();
 
 
-    setTimeout(function () {
+    //setTimeout(function () {
         try {
             if (!auditTaskState ) {
                 throw new Error("AUDIT: Audit task state must exist ");
@@ -100,8 +100,14 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
             
             // Check the polling state, trigger ConfigProcessor if needed.
             // Move the signal checking here
-            logger.fine("MSDA consul Audit: msdaconsulOnpolling: ", global.msdaconsulOnPolling);
-            logger.fine("MSDA consul Audit: msdaconsul poolName: ", blockInputProperties.poolName.value);
+            logger.fine(
+              getLogHeader() + "MSDA consul Audit: msdaconsulOnpolling: ",
+              global.msdaconsulOnPolling
+            );
+            logger.fine(
+              getLogHeader() + "MSDA consul Audit: msdaconsul poolName: ",
+              blockInputProperties.poolName.value
+            );
 
             if (
                 global.msdaconsulOnPolling.some(
@@ -110,12 +116,15 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
                 )
             ) {
                 logger.fine(
-                    "MSDA consul audit onPost: ConfigProcessor is on polling state, no need to fire an onPost.",
+                    getLogHeader() +
+                        "MSDA consul audit onPost: ConfigProcessor is on polling state, no need to fire an onPost.",
                     blockInputProperties.poolName.value
                 );
+                oThis.finishOperation(restOperation, auditTaskState);
             } else {
                 logger.fine(
-                    "MSDA consul audit onPost: ConfigProcessor is NOT on polling state, will trigger ConfigProcessor onPost.",
+                    getLogHeader() +
+                        "MSDA consul audit onPost: ConfigProcessor is NOT on polling state, will trigger ConfigProcessor onPost.",
                     blockInputProperties.poolName.value
                 );
                 try {
@@ -126,20 +135,26 @@ msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost = function (restOpera
                     poolNameObject.value = null;
                     oThis.finishOperation(restOperation, auditTaskState);
                     logger.fine(
-                        "MSDA consul audit onPost: trigger ConfigProcessor onPost "
+                        getLogHeader() +
+                            "MSDA consul audit onPost: trigger ConfigProcessor onPost "
                     );
                 } catch (err) {
                     logger.fine(
-                        "MSDA consul audit onPost: Failed to send out restOperation. ",
+                        getLogHeader() +
+                            "MSDA consul audit onPost: Failed to send out restOperation. ",
                         err.message
                     );
                 }
             }
         } catch (ex) {
-            logger.fine("msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost caught generic exception " + ex);
+            logger.fine(
+                getLogHeader() +
+                    "msdaconsulEnforceConfiguredAuditProcessor.prototype.onPost caught generic exception " +
+                    ex
+            );
             restOperation.fail(ex);
         }
-    }, 2000)
+    //}, 2000)
 };
 
 var getObjectByID = function ( key, array) {
